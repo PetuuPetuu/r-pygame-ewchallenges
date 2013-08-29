@@ -13,5 +13,3 @@ class Title(pygame.sprite.Sprite):
         self.color = colors["text"]
 
         self.image = self.font.render(self.text, True, self.color)
-
-
