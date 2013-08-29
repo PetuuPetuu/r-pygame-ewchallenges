@@ -27,7 +27,7 @@ class Bar(pygame.sprite.Sprite):
         self.bar = pygame.Surface((self.rect.width, self.height))
         self.bar.convert_alpha()
         self.bar.fill((205, 205, 205))
-        
+
         self.bar_selected = pygame.Surface((self.rect.width, self.height))
         self.bar_selected.convert_alpha()
         self.bar_selected.fill((205, 205, 150))

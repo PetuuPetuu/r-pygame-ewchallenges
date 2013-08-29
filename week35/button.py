@@ -57,7 +57,6 @@ class Button(pygame.sprite.Sprite):
         self.background_error.convert_alpha()
         self.background_error.fill(colors["error"])
 
-
         # set vertical bar ticking rate
         self._start = pygame.time.get_ticks()
         self._delay = 20000 / 60

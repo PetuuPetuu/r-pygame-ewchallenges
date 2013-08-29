@@ -93,7 +93,6 @@ class InputBox(pygame.sprite.Sprite):
 
             self._last_update = time
 
-
         if self.vbar_show:
             data += "|"
 
@@ -109,7 +108,7 @@ class InputBox(pygame.sprite.Sprite):
             self.image.blit(self.background, (0, 0))
 
         self.image.blit(text, (5, 5))
-        
+
     def select(self):
         self.selected = True
 
@@ -146,7 +145,6 @@ class InputBox(pygame.sprite.Sprite):
                         self.data += (chr(data)).upper()
                     else:
                         self.data += (chr(data))
-
 
             # if user tries to go over the limit, the input box flashes red.
             else:

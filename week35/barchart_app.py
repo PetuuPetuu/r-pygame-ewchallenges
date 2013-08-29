@@ -4,7 +4,8 @@ import datetime
 import os
 
 from pygame.locals import (QUIT, KEYDOWN, K_ESCAPE, K_RETURN, K_DELETE,
-                          MOUSEBUTTONDOWN, KMOD_LSHIFT, KMOD_RSHIFT, KMOD_CAPS)
+                           MOUSEBUTTONDOWN, KMOD_LSHIFT,
+                           KMOD_RSHIFT, KMOD_CAPS)
 from input_box import InputBox
 from button import Button
 from title import Title
@@ -14,10 +15,10 @@ from bar import Bar
 class BarchartApp(object):
     def __init__(self):
         pygame.init()
-        os.environ["SDL_VIDEO_CENTERED"] = '1'          # Center the game window
+        os.environ["SDL_VIDEO_CENTERED"] = '1'  # Center the game window
         self.width, self.height = 800, 800
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("BarchartApp")       # Set app name
+        pygame.display.set_caption("BarchartApp")   # Set app name
         pygame.key.set_repeat(200, 80)
 
         self.fps = 60
@@ -87,7 +88,6 @@ class BarchartApp(object):
                         bar.deselect()
                 self.bar_menu()
 
-
             if event.type == KEYDOWN:
                 if event.key == K_DELETE:
                     for bar in self.bars:
@@ -100,11 +100,11 @@ class BarchartApp(object):
                         if event.key not in [K_RETURN, K_ESCAPE]:
                             mods = pygame.key.get_mods()
 
-                            # Caps Lock ON 
-                            if (mods & KMOD_CAPS):
+                            # Caps Lock ON
+                            if mods & KMOD_CAPS:
 
                                 # Caps Lock ON & Shift ON
-                                if (mods & KMOD_LSHIFT) or (mods & KMOD_RSHIFT):
+                                if mods & KMOD_LSHIFT or mods & KMOD_RSHIFT:
                                     box.update_data(event.key, False)
 
                                 # Caps Lock ON & Shift OFF
@@ -112,7 +112,7 @@ class BarchartApp(object):
                                     box.update_data(event.key, True)
 
                             # Caps Lock OFF & Shift ON
-                            elif (mods & KMOD_LSHIFT) or (mods & KMOD_RSHIFT):
+                            elif mods & KMOD_LSHIFT or mods & KMOD_RSHIFT:
                                 box.update_data(event.key, True)
 
                             else:
@@ -122,25 +122,25 @@ class BarchartApp(object):
         self.barmenu.empty()
         self.bartitles.empty()
 
-        font = {"family":"Arial", "size":14}
+        font = {"family": "Arial", "size": 14}
 
         colors = {
-            "background":(205, 205, 205),
-            "selected":(200, 200, 150),
-            "hover":(150, 200, 150),
-            "error":(200, 150, 150),
-            "text":(25, 25, 25)
+            "background": (205, 205, 205),
+            "selected": (200, 200, 150),
+            "hover": (150, 200, 150),
+            "error": (200, 150, 150),
+            "text": (25, 25, 25)
         }
 
         colors_text = {
-            "background":(225, 225, 225),
-            "selected":(250, 250, 200),
-            "hover":(200, 250, 200),
-            "error":(250, 200, 200),
-            "text":(75, 75, 75)
+            "background": (225, 225, 225),
+            "selected": (250, 250, 200),
+            "hover": (200, 250, 200),
+            "error": (250, 200, 200),
+            "text": (75, 75, 75)
         }
 
-        bar_selected  = ""
+        bar_selected = ""
         for bar in self.bars:
             if bar.selected:
                 bar_selected = bar
@@ -149,7 +149,7 @@ class BarchartApp(object):
 
             self.bartitles.add(Title(font, colors, (580, 700), "Name:"))
             self.bartitles.add(Title(font, colors, (580, 716), "Value:"))
-            self.bartitles.add(Title(font, colors, (580, 732),"% of max:"))
+            self.bartitles.add(Title(font, colors, (580, 732), "% of max:"))
 
             self.bartitles.add(Title(font, colors_text, (635, 700),
                                      bar_selected.caption))
@@ -190,17 +190,16 @@ class BarchartApp(object):
         self.bar_menu()
         self.main_menu()
 
-
     def main_menu(self):
         self.menu.empty()
         self.titles.empty()
-        font = {"family":"Arial", "size":20}
+        font = {"family": "Arial", "size": 20}
         colors = {
-            "background":(225, 225, 225),
-            "selected":(250, 250, 200),
-            "hover":(200, 250, 200),
-            "error":(250, 200, 200),
-            "text":(75, 75, 75)
+            "background": (225, 225, 225),
+            "selected": (250, 250, 200),
+            "hover": (200, 250, 200),
+            "error": (250, 200, 200),
+            "text": (75, 75, 75)
         }
         input_caption_rect = pygame.Rect(10, self.height-40-10, 300, 40)
         input_caption = InputBox(font, colors, input_caption_rect, self.fps, 0)
@@ -209,11 +208,11 @@ class BarchartApp(object):
         input_value = InputBox(font, colors, input_value_rect, self.fps, 1)
 
         button_colors = {
-            "background":(205, 205, 205),
-            "selected":(200, 200, 150),
-            "hover":(150, 200, 150),
-            "error":(200, 150, 150),
-            "text":(25, 25, 25)
+            "background": (205, 205, 205),
+            "selected": (200, 200, 150),
+            "hover": (150, 200, 150),
+            "error": (200, 150, 150),
+            "text": (25, 25, 25)
         }
 
         button_submit_rect = pygame.Rect(395, self.height-40-10, 65, 40)
@@ -222,7 +221,7 @@ class BarchartApp(object):
 
         button_save_rect = pygame.Rect(470, self.height-40-10, 100, 40)
         button_save = Button(font, button_colors, button_save_rect,
-                               "Save image", "save_image")
+                             "Save image", "save_image")
 
         self.menu.add(input_caption)
         self.menu.add(input_value)
@@ -268,7 +267,6 @@ class BarchartApp(object):
             else:
                 self.bars.add(Bar(caption, value, maxvalue,
                                   600, x, self.height-160))
-
 
     def perform_action(self, name):
         function = getattr(self, name)
