@@ -16,9 +16,26 @@ class BarchartApp(object):
     def __init__(self):
         pygame.init()
         os.environ["SDL_VIDEO_CENTERED"] = '1'  # Center the game window
+        info = pygame.display.Info()            # get display info
+        screen_height = info.current_h
+        screen_width = info.current_w
         self.width, self.height = 800, 800
+        if screen_height < 800:
+            self.height = 600
+            self.width = 600
+            if screen_height < 600:
+                self.height = screen_height
+                self.width = screen_width
+        self.maxheight = int(self.height*0.75)
+        self.bbarheight = self.height/8
+        self.padding = self.width/80
+        self.buttonheight = self.padding*4
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("BarchartApp")   # Set app name
+        title = "BarchartApp | {width}x{height}".format(
+            width=self.width,
+            height=self.height
+        )
+        pygame.display.set_caption(title)   # Set app name
         pygame.key.set_repeat(200, 80)
 
         self.fps = 60
@@ -27,7 +44,7 @@ class BarchartApp(object):
         self.background.convert()
 
         # grey bar that contains the GUI
-        self.bottombar = pygame.Surface((800, 100))
+        self.bottombar = pygame.Surface((self.width, self.bbarheight))
         self.bottombar.fill((240, 240, 240))
 
         # container for text inputs and buttons
@@ -97,7 +114,8 @@ class BarchartApp(object):
                             bar.select()
                     else:
                         bar.deselect()
-                self.bar_menu()
+                if self.bars:
+                    self.bar_menu()
 
             if event.type == KEYDOWN:
 
@@ -107,7 +125,7 @@ class BarchartApp(object):
                         if bar.selected:
                             self.delete_bar()
 
-                # escape key ends the game
+                # escape key exits the app
                 if event.key == K_ESCAPE:
                     return False
 
@@ -144,7 +162,7 @@ class BarchartApp(object):
         # clear sprite groups for bar labels
         self.bartitles.empty()
 
-        font = {"family": "Arial", "size": 14}
+        font = {"family": "Arial", "size": self.padding*1.5}
 
         colors = {
             "background": (205, 205, 205),
@@ -171,23 +189,78 @@ class BarchartApp(object):
 
         if bar_selected:
 
-            self.bartitles.add(Title(font, colors, (580, 700), "Name:"))
-            self.bartitles.add(Title(font, colors, (580, 716), "Value:"))
-            self.bartitles.add(Title(font, colors, (580, 732), "% of max:"))
+            font["size"] = int(self.height/80*2)
 
-            self.bartitles.add(Title(font, colors_text, (635, 700),
-                                     bar_selected.caption))
-            self.bartitles.add(Title(font, colors_text, (635, 716),
-                                     str(bar_selected.value)))
+            padd = self.padding*5
+            xpos = padd+self.height/8*3+font["size"]*3*2+self.bbarheight
+
+            button_delete_rect = pygame.Rect(
+                xpos,
+                self.height-self.buttonheight-self.padding,
+                self.bbarheight,
+                self.buttonheight
+            )
+
+            self.menu.add(Button(font, colors, button_delete_rect, "Delete",
+                                 "delete_bar", id=4))
+
+            # Name label
+            font["size"] = int(self.padding*1.5)
+            self.bartitles.add(Title(
+                font,
+                colors,
+                (xpos, self.height-self.bbarheight),
+                "Name:")
+            )
+
+            # Value label
+            self.bartitles.add(Title(
+                font,
+                colors,
+                (xpos, self.height-self.bbarheight+font["size"]+2),
+                "Value:")
+            )
+
+            # Percentage label
+            self.bartitles.add(Title(
+                font,
+                colors,
+                (xpos, self.height-self.bbarheight+font["size"]*2+2),
+                "% of max:")
+            )
+
+            # Name
+            self.bartitles.add(Title(
+                font,
+                colors_text,
+                (xpos+self.padding*5,  self.height-self.bbarheight),
+                bar_selected.caption)
+            )
+
+            # Value
+            self.bartitles.add(Title(
+                font,
+                colors_text,
+                (
+                    xpos+self.padding*5,
+                    self.height-self.bbarheight+font["size"]+2
+                ),
+                str(bar_selected.value))
+            )
+
             percentage = 1.0*bar_selected.value/bar_selected.maxvalue*100
             rounded = str(int(round(percentage)))+"%"
-            self.bartitles.add(Title(font, colors_text, (635, 732), rounded))
 
-            button_delete_rect = pygame.Rect(580, self.height-40-10, 130, 40)
-
-            font["size"] = 20
-            self.menu.add(Button(font, colors, button_delete_rect, "Delete",
-                                 "delete_bar"))
+            # Percentage
+            self.bartitles.add(Title(
+                font,
+                colors_text,
+                (
+                    xpos+self.padding*5,
+                    self.height-self.bbarheight+font["size"]*2+2
+                ),
+                rounded)
+            )
 
     def save_image(self):
         # deselect any selected bars for the image saving
@@ -201,7 +274,12 @@ class BarchartApp(object):
         date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
 
         # only save the barchart, not the GUI
-        surface = self.screen.subsurface(pygame.Rect(0, 0, 800, 700))
+        surface = self.screen.subsurface(pygame.Rect(
+            0,
+            0,
+            self.width,
+            self.height-self.bbarheight)
+        )
         filename = str(date)+".png"
         pygame.image.save(surface, filename)
         print "Saved image as "+filename
@@ -214,10 +292,11 @@ class BarchartApp(object):
                 x = bar.rect.x
                 self.bars.remove(bar)
                 break
+
         # move bars to fill the gap left by the deleted bar
         for bar in self.bars:
             if bar.rect.x > x:
-                bar.move(-70)
+                bar.move(-bar.rect.width-self.padding)
 
         # update the barchart and the GUI
         self.bar_menu()
@@ -228,7 +307,7 @@ class BarchartApp(object):
         self.menu.empty()
         self.titles.empty()
 
-        font = {"family": "Arial", "size": 20}
+        font = {"family": "Arial", "size": int(self.width/80*2)}
 
         colors = {
             "background": (225, 225, 225),
@@ -238,10 +317,22 @@ class BarchartApp(object):
             "text": (75, 75, 75)
         }
 
-        input_caption_rect = pygame.Rect(10, self.height-40-10, 300, 40)
+        xpos = self.padding
+        input_caption_rect = pygame.Rect(
+            xpos,
+            self.height-self.buttonheight-self.padding,
+            self.height/8*3,
+            self.buttonheight
+        )
         input_caption = InputBox(font, colors, input_caption_rect, self.fps, 0)
 
-        input_value_rect = pygame.Rect(320, self.height-40-10, 65, 40)
+        xpos += self.height/8*3+self.padding
+        input_value_rect = pygame.Rect(
+            xpos,
+            self.height-self.buttonheight-self.padding,
+            font["size"]*3,
+            self.buttonheight
+        )
         input_value = InputBox(font, colors, input_value_rect, self.fps, 1)
 
         button_colors = {
@@ -252,21 +343,44 @@ class BarchartApp(object):
             "text": (25, 25, 25)
         }
 
-        button_submit_rect = pygame.Rect(395, self.height-40-10, 65, 40)
+        xpos += font["size"]*3+self.padding
+        button_submit_rect = pygame.Rect(
+            xpos,
+            self.height-self.buttonheight-self.padding,
+            font["size"]*3,
+            self.buttonheight
+        )
         button_submit = Button(font, button_colors, button_submit_rect,
                                "Add", "submit_values")
 
-        button_save_rect = pygame.Rect(470, self.height-40-10, 100, 40)
+        xpos += font["size"]*3+self.padding
+        button_save_rect = pygame.Rect(
+            xpos,
+            self.height-self.buttonheight-self.padding,
+            self.bbarheight,
+            self.buttonheight
+        )
         button_save = Button(font, button_colors, button_save_rect,
-                             "Save image", "save_image")
+                             "Save image", "save_image", id=3)
 
         self.menu.add(input_caption)
         self.menu.add(input_value)
         self.menu.add(button_submit)
         self.menu.add(button_save)
 
-        self.titles.add(Title(font, colors, (10, 710), "Caption:"))
-        self.titles.add(Title(font, colors, (320, 710), "Value:"))
+        self.titles.add(Title(
+            font, colors,
+            (self.padding, self.width-self.bbarheight+self.padding),
+            "Caption:")
+        )
+        self.titles.add(Title(
+            font, colors,
+            (
+                self.height/8*3+self.padding*2,
+                self.width-self.bbarheight+self.padding
+            ),
+            "Value:")
+        )
 
     def submit_values(self):
         caption = ""
@@ -311,17 +425,25 @@ class BarchartApp(object):
                         # and scale all bars according to it
                         bar.set_size(maxvalue)
 
-            # each bar is 60 pixels wide with a 10px padding on each side
-            x = 10+len(self.bars)*70
+            barwidth = self.buttonheight+self.padding*3
+            bars = len(self.bars)*barwidth
+            oldpadding = len(self.bars)*self.padding
+            # other bar paddings and bars, padding left
+            x = oldpadding+bars+self.padding
+            print x
 
             # don't let the user add more bars if end of window is reached
-            if x+70 > self.width:
+            if x+self.buttonheight+self.padding*3 > self.width:
                 for button in self.menu:
                     if button.id == 2:
                         button.throw_error()
             else:
-                self.bars.add(Bar(caption, value, maxvalue,
-                                  600, x, self.height-160))
+                y = self.height-self.bbarheight-self.buttonheight
+                self.bars.add(Bar(
+                    caption, value, maxvalue,
+                    self.maxheight, x,
+                    y-self.padding*2, barwidth)
+                )
 
     # pass a string to this function; function with the same name as the
     # string is executed
@@ -332,7 +454,7 @@ class BarchartApp(object):
 
     def draw(self):
         self.screen.blit(self.background, (0, 0))
-        self.screen.blit(self.bottombar, (0, 700))
+        self.screen.blit(self.bottombar, (0, self.height-self.bbarheight))
         self.menu.draw(self.screen)
         self.titles.draw(self.screen)
         self.bars.draw(self.screen)

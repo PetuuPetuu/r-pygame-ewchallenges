@@ -3,9 +3,9 @@ import pygame
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, font, colors, rect, text, action):
+    def __init__(self, font, colors, rect, text, action, id=2):
         pygame.sprite.Sprite.__init__(self)
-        self.id = 2
+        self.id = id
         # get font values
         font_family = font["family"]
         fontsize = font["size"]

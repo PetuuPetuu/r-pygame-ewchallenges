@@ -3,7 +3,7 @@ import pygame
 
 
 class Bar(pygame.sprite.Sprite):
-    def __init__(self, caption, value, maxvalue, maxheight, x, y):
+    def __init__(self, caption, value, maxvalue, maxheight, x, y, width):
         pygame.sprite.Sprite.__init__(self)
         self.font = pygame.font.SysFont("Arial", 12)
         self.caption = caption
@@ -15,13 +15,12 @@ class Bar(pygame.sprite.Sprite):
         self.text = self.font.render(caption, True, (155, 155, 155))
 
         self.value = value
-        self.maxheight = maxheight
         self.maxvalue = maxvalue
-
+        self.maxheight = maxheight
         # height is scaled according to the biggest value among bars
         self.height = int(1.0*value/maxvalue*maxheight)
 
-        self.rect = pygame.Rect(x, y, 60, maxheight)
+        self.rect = pygame.Rect(x, y, width, maxheight)
 
         # drawn from the bottom
         self.rect.bottom = y
@@ -52,7 +51,6 @@ class Bar(pygame.sprite.Sprite):
 
     def set_size(self, maxvalue):
         self.height = int(1.0*self.value/maxvalue*self.maxheight)
-        self.maxvalue = maxvalue
 
         self.bar = pygame.Surface((self.rect.width, self.height))
         self.bar.convert_alpha()
