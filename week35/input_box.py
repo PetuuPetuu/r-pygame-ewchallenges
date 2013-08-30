@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame
+from pygame.locals import K_BACKSPACE
 
 
 class InputBox(pygame.sprite.Sprite):
@@ -122,30 +123,17 @@ class InputBox(pygame.sprite.Sprite):
     def hover(self):
         self.hovered = True
 
-    def update_data(self, data, uppercase):
+    def update_data(self, data):
 
-        if data == 8:  # backspace
+        if data == u"\u0008":
             self.data = self.data[:-1]
-
-        elif data <= 127:
-
-            if len(self.data) < self.limit:
-
-                # numeric input
-                if self.id == 1:
-                    if chr(data).isdigit():
-                        self.data += chr(data)
-                    else:
-                        self.error = True
-
-                # alphanumeric input
-                if self.id == 0:
-                    # uppercase letters
-                    if uppercase:
-                        self.data += (chr(data)).upper()
-                    else:
-                        self.data += (chr(data))
-
-            # if user tries to go over the limit, the input box flashes red.
-            else:
-                self.error = True
+        elif data.isalnum() and len(self.data) < self.limit:
+            if self.id == 0:
+                self.data += data
+            if self.id == 1:
+                if data.isdigit():
+                    self.data += data
+                else:
+                    self.error = True
+        else:
+            self.error = True

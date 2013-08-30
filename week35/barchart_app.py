@@ -134,28 +134,7 @@ class BarchartApp(object):
 
                     # objects in self.menu with id 0 or 1 are input boxes
                     if box.selected and box.id in [0, 1]:
-                        if event.key not in [K_RETURN, K_ESCAPE]:
-
-                            # get active modifier keys
-                            mods = pygame.key.get_mods()
-
-                            # Caps Lock ON
-                            if mods & KMOD_CAPS:
-
-                                # Caps Lock ON & Shift ON
-                                if mods & KMOD_LSHIFT or mods & KMOD_RSHIFT:
-                                    box.update_data(event.key, False)
-
-                                # Caps Lock ON & Shift OFF
-                                else:
-                                    box.update_data(event.key, True)
-
-                            # Caps Lock OFF & Shift ON
-                            elif mods & KMOD_LSHIFT or mods & KMOD_RSHIFT:
-                                box.update_data(event.key, True)
-
-                            else:
-                                box.update_data(event.key, False)
+                        box.update_data(event.unicode)
 
     def bar_menu(self):
 
@@ -233,7 +212,7 @@ class BarchartApp(object):
             self.bartitles.add(Title(
                 font,
                 colors_text,
-                (xpos+self.padding*5,  self.height-self.bbarheight),
+                (xpos+self.padding*6,  self.height-self.bbarheight),
                 bar_selected.caption)
             )
 
@@ -242,7 +221,7 @@ class BarchartApp(object):
                 font,
                 colors_text,
                 (
-                    xpos+self.padding*5,
+                    xpos+self.padding*6,
                     self.height-self.bbarheight+font["size"]+2
                 ),
                 str(bar_selected.value))
@@ -256,7 +235,7 @@ class BarchartApp(object):
                 font,
                 colors_text,
                 (
-                    xpos+self.padding*5,
+                    xpos+self.padding*6,
                     self.height-self.bbarheight+font["size"]*2+2
                 ),
                 rounded)
