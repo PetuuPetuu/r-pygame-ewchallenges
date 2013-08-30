@@ -26,18 +26,24 @@ class BarchartApp(object):
         self.background.fill((255, 255, 255))
         self.background.convert()
 
+        # grey bar that contains the GUI
         self.bottombar = pygame.Surface((800, 100))
         self.bottombar.fill((240, 240, 240))
 
+        # container for text inputs and buttons
         self.menu = pygame.sprite.OrderedUpdates()
-        self.barmenu = pygame.sprite.Group()
-        self.bartitles = pygame.sprite.Group()
-        self.mouse = pygame.sprite.GroupSingle()
-        self.mouse.add(Mouse())
 
+        # container for the text input labels
+        self.titles = pygame.sprite.Group()
+
+        # container for the bar info section
+        self.bartitles = pygame.sprite.Group()
+
+        # container for the bars
         self.bars = pygame.sprite.OrderedUpdates()
 
-        self.titles = pygame.sprite.Group()
+        self.mouse = pygame.sprite.GroupSingle()
+        self.mouse.add(Mouse())
 
     def main(self):
         self.main_menu()
@@ -53,12 +59,14 @@ class BarchartApp(object):
         self.mouse.sprite.move(pygame.mouse.get_pos())
         for event in pygame.event.get():
 
+            # handle menu hover states
             for button in self.menu:
                 if pygame.sprite.spritecollide(button, self.mouse, False):
                     button.hover()
                 else:
                     button.normal()
 
+            # handle bar hover states
             for bar in self.bars:
                 if pygame.sprite.spritecollide(bar, self.mouse, False):
                     bar.hover()
@@ -69,6 +77,8 @@ class BarchartApp(object):
                 return False
 
             if event.type == MOUSEBUTTONDOWN:
+
+                # handle menuitem clicks
                 for button in self.menu:
                     if pygame.sprite.spritecollide(button, self.mouse, False):
                         if button.action:
@@ -78,6 +88,7 @@ class BarchartApp(object):
                     else:
                         button.deselect()
 
+                # handle bar clicks
                 for bar in self.bars:
                     if pygame.sprite.spritecollide(bar, self.mouse, False):
                         if bar.selected:
@@ -89,15 +100,25 @@ class BarchartApp(object):
                 self.bar_menu()
 
             if event.type == KEYDOWN:
+
+                # delete key deletes a selected bar
                 if event.key == K_DELETE:
                     for bar in self.bars:
                         if bar.selected:
                             self.delete_bar()
+
+                # escape key ends the game
                 if event.key == K_ESCAPE:
                     return False
+
+                # handle input to input boxes
                 for box in self.menu:
+
+                    # objects in self.menu with id 0 or 1 are input boxes
                     if box.selected and box.id in [0, 1]:
                         if event.key not in [K_RETURN, K_ESCAPE]:
+
+                            # get active modifier keys
                             mods = pygame.key.get_mods()
 
                             # Caps Lock ON
@@ -119,7 +140,8 @@ class BarchartApp(object):
                                 box.update_data(event.key, False)
 
     def bar_menu(self):
-        self.barmenu.empty()
+
+        # clear sprite groups for bar labels
         self.bartitles.empty()
 
         font = {"family": "Arial", "size": 14}
@@ -141,6 +163,8 @@ class BarchartApp(object):
         }
 
         bar_selected = ""
+
+        # find the selected bar
         for bar in self.bars:
             if bar.selected:
                 bar_selected = bar
@@ -166,12 +190,17 @@ class BarchartApp(object):
                                  "delete_bar"))
 
     def save_image(self):
+        # deselect any selected bars for the image saving
         for bar in self.bars:
             if bar.selected:
                 bar.deselect()
                 bar.update()
         self.draw()
+
+        # get current date and time to use as filename
         date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+
+        # only save the barchart, not the GUI
         surface = self.screen.subsurface(pygame.Rect(0, 0, 800, 700))
         filename = str(date)+".png"
         pygame.image.save(surface, filename)
@@ -181,19 +210,26 @@ class BarchartApp(object):
         x = 0
         for bar in self.bars:
             if bar.selected:
+                # get bar position so other bars can be relocated
                 x = bar.rect.x
                 self.bars.remove(bar)
                 break
+        # move bars to fill the gap left by the deleted bar
         for bar in self.bars:
             if bar.rect.x > x:
                 bar.move(-70)
+
+        # update the barchart and the GUI
         self.bar_menu()
         self.main_menu()
 
     def main_menu(self):
+        # clear the GUI
         self.menu.empty()
         self.titles.empty()
+
         font = {"family": "Arial", "size": 20}
+
         colors = {
             "background": (225, 225, 225),
             "selected": (250, 250, 200),
@@ -201,6 +237,7 @@ class BarchartApp(object):
             "error": (250, 200, 200),
             "text": (75, 75, 75)
         }
+
         input_caption_rect = pygame.Rect(10, self.height-40-10, 300, 40)
         input_caption = InputBox(font, colors, input_caption_rect, self.fps, 0)
 
@@ -234,32 +271,50 @@ class BarchartApp(object):
     def submit_values(self):
         caption = ""
         value = 0
+
+        # get data from input boxes
         for button in self.menu:
+
+            # input box id 0 is the caption box
             if button.id == 0:
+                # so the data is a string
                 caption = str(button.data)
+
+            # input box id 1 is the value box
             elif button.id == 1:
+
+                # so the data should be int
                 try:
                     value = int(button.data)
                 except:
                     print "Incorrect input!"
 
-        if caption == "" or value == 0:
+        # if either data field is empty or invalid
+        if caption == "" or value < 1:
             for button in self.menu:
                 if button.id == 2:
+
+                    # flash the "Add" button red
                     button.throw_error()
 
         else:
             maxvalue = value
 
             if self.bars:
+                # get greatest current value of a bar
                 maxvalue = max(bar.value for bar in self.bars)
+                # if new value is bigger than current maxvalue
                 if value > maxvalue:
+                    # set it as new maxvalue
                     maxvalue = value
                     for bar in self.bars:
+                        # and scale all bars according to it
                         bar.set_size(maxvalue)
 
+            # each bar is 60 pixels wide with a 10px padding on each side
             x = 10+len(self.bars)*70
 
+            # don't let the user add more bars if end of window is reached
             if x+70 > self.width:
                 for button in self.menu:
                     if button.id == 2:
@@ -268,6 +323,8 @@ class BarchartApp(object):
                 self.bars.add(Bar(caption, value, maxvalue,
                                   600, x, self.height-160))
 
+    # pass a string to this function; function with the same name as the
+    # string is executed
     def perform_action(self, name):
         function = getattr(self, name)
         if function() is False:
@@ -279,7 +336,6 @@ class BarchartApp(object):
         self.menu.draw(self.screen)
         self.titles.draw(self.screen)
         self.bars.draw(self.screen)
-        self.barmenu.draw(self.screen)
         self.bartitles.draw(self.screen)
         pygame.display.update()
 

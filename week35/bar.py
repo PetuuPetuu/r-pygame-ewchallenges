@@ -7,16 +7,25 @@ class Bar(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.font = pygame.font.SysFont("Arial", 12)
         self.caption = caption
+
+        # truncate long strings on the chart
         if len(caption) > 10:
             caption = caption[:6]+"..."
+
         self.text = self.font.render(caption, True, (155, 155, 155))
-        twidth, theight = self.text.get_size()
+
         self.value = value
         self.maxheight = maxheight
         self.maxvalue = maxvalue
+
+        # height is scaled according to the biggest value among bars
         self.height = int(1.0*value/maxvalue*maxheight)
+
         self.rect = pygame.Rect(x, y, 60, maxheight)
+
+        # drawn from the bottom
         self.rect.bottom = y
+
         self.image = pygame.Surface((self.rect.width, self.rect.height))
         self.image.fill((255, 255, 255))
         self.image.convert_alpha()
@@ -37,6 +46,8 @@ class Bar(pygame.sprite.Sprite):
         self.bar_hover.fill((150, 200, 150))
 
         self.image.blit(self.bar, (0, self.rect.height-self.height-30))
+
+        twidth, theight = self.text.get_size()
         self.image.blit(self.text, (1, self.rect.height-theight))
 
     def set_size(self, maxvalue):
