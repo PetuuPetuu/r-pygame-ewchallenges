@@ -108,12 +108,10 @@ class BarchartApp(object):
                 # handle bar clicks
                 for bar in self.bars:
                     if pygame.sprite.spritecollide(bar, self.mouse, False):
-                        if bar.selected:
-                            bar.deselect()
-                        else:
-                            bar.select()
-                    else:
-                        bar.deselect()
+                        for _bar in self.bars:
+                            _bar.deselect()
+                        bar.select()
+                        break
                 if self.bars:
                     self.bar_menu()
 
@@ -200,14 +198,6 @@ class BarchartApp(object):
                 "Value:")
             )
 
-            # Percentage label
-            self.bartitles.add(Title(
-                font,
-                colors,
-                (xpos, self.height-self.bbarheight+font["size"]*2+2),
-                "% of max:")
-            )
-
             # Name
             self.bartitles.add(Title(
                 font,
@@ -225,20 +215,6 @@ class BarchartApp(object):
                     self.height-self.bbarheight+font["size"]+2
                 ),
                 str(bar_selected.value))
-            )
-
-            percentage = 1.0*bar_selected.value/bar_selected.maxvalue*100
-            rounded = str(int(round(percentage)))+"%"
-
-            # Percentage
-            self.bartitles.add(Title(
-                font,
-                colors_text,
-                (
-                    xpos+self.padding*6,
-                    self.height-self.bbarheight+font["size"]*2+2
-                ),
-                rounded)
             )
 
     def save_image(self):
@@ -265,21 +241,22 @@ class BarchartApp(object):
 
     def delete_bar(self):
         x = 0
+
         for bar in self.bars:
             if bar.selected:
                 # get bar position so other bars can be relocated
                 x = bar.rect.x
                 self.bars.remove(bar)
+
+                # move bars to fill the gap left by the deleted bar
+                for bar in self.bars:
+                    if bar.rect.x > x:
+                        bar.move(-bar.rect.width-self.padding)
                 break
 
-        # move bars to fill the gap left by the deleted bar
-        for bar in self.bars:
-            if bar.rect.x > x:
-                bar.move(-bar.rect.width-self.padding)
-
-        # update the barchart and the GUI
-        self.bar_menu()
-        self.main_menu()
+                # update the barchart and the GUI
+                self.bar_menu()
+                self.main_menu()
 
     def main_menu(self):
         # clear the GUI
@@ -409,7 +386,6 @@ class BarchartApp(object):
             oldpadding = len(self.bars)*self.padding
             # other bar paddings and bars, padding left
             x = oldpadding+bars+self.padding
-            print x
 
             # don't let the user add more bars if end of window is reached
             if x+self.buttonheight+self.padding*3 > self.width:
