@@ -7,4 +7,4 @@ Screenshots:
 
 Week 35:
 
-![Week 35](https://github.com/bradur/rpygameweekly/raw/master/screenshots/barchartapp.png "w35")
+![Week 35](https://github.com/bradur/r-pygame-ewchallenges/raw/master/screenshots/barchartapp.png  "w35")
