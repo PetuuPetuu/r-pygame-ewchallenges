@@ -220,7 +220,7 @@ class Game(object):
                 self.popup_colors_wrong,
                 [self.width, self.height],
                 pygame.Rect(0, y, 0, 0),
-                "Quit Game",
+                "QUIT GAME",
                 [True, False, False, False],
                 "quit_game",
                 id=6
