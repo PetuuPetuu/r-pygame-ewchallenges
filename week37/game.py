@@ -118,7 +118,6 @@ class Game(object):
         self.mouse.add(Mouse())
 
         self.start_game()
-        self.next_question()
 
     def start_game(self):
         with open('qa.json') as data_file:
@@ -167,6 +166,7 @@ class Game(object):
         if len(self.questions_answers) > 0:
             self.qac = self.questions_answers.pop(0)
 
+            print self.qac
             self.question.add(QuestionDisplay(
                 self.question_font,
                 self.question_colors,
