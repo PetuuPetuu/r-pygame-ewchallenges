@@ -1,0 +1,87 @@
+{
+    "qas": [
+        {
+            "question": "Complete this phrase. As sick as a...",
+            "choices": ["Penguin", "Parrot", "Puffin", "Partridge"],
+            "answer": "Parrot"
+        },
+
+        {
+            "question": "Which legal document states a person's wishes regarding the disposal of their property after death?",
+            "choices": ["Will", "Shall", "Would", "Should"],
+            "answer": "Will"
+        },
+
+        {
+            "question": "Complete the title of the James Bond film The Man With The Golden...",
+            "choices": ["Gun", "Tooth", "Delicious", "Eagle"],
+            "answer": "Gun"
+        },
+
+        {
+            "question": "Which of these fruits shares its name with something superior or desirable?",
+            "choices": ["Apricot", "Mango", "Grapefruit", "Plum"],
+            "answer": "Plum"
+        },
+
+        {
+            "question": "In which sport do two teams pull at the opposite ends of a rope?",
+            "choices": ["Ice hockey", "Basketball", "Tug of war", "Polo"],
+            "answer": "Tug of war"
+        },
+
+        {
+            "question": "Where would a cowboy wear his chaps?",
+            "choices": ["On his hands", "On his arms", "On his legs", "On his head"],
+            "answer": "On his legs"
+        },
+
+        {
+            "question": "Which of these zodiac signs is not represented by an animal that grows horns?",
+            "choices": ["Taurus", "Capricorn", "Aries", "Aquarius"],
+            "answer": "Aquarius"
+        },
+
+        {
+            "question": "Prime Minister Tony Blair was born in which country?",
+            "choices": ["Northern Ireland", "Scotland", "England", "Wales"],
+            "answer": "Scotland"
+        },
+
+        {
+            "question": "Whose autobiography has the title A Long Walk To Freedom?",
+            "choices": ["Ranulph Fiennes", "Nelson Mandela", "Mikhail Gorbachev", "Mother Teresa"],
+            "answer": "Nelson Mandela"
+        },
+
+        {
+            "question": "Duffle coats are named after a town in which country?",
+            "choices": ["Germany", "Holland", "Belgium", "Austria"],
+            "answer": "Belgium"
+        },
+
+        {
+            "question": "Complete this stage instruction in Shakespeare's The Winter's Tale: 'Exit, pursued by a ...'",
+            "choices": ["Dog", "Tiger", "Bear", "Clown"],
+            "answer": "Bear"
+        },
+
+        {
+            "question": "The young of which creature is known as a squab?",
+            "choices": ["Octopus", "Pigeon", "Salmon", "Horse"],
+            "answer": "Pigeon"
+        },
+
+        {
+            "question": "Who is the patron saint of Spain?",
+            "choices": ["St John", "St James", "St Peter", "St Benedict"],
+            "answer": "St James"
+        },
+
+        {
+            "question": "Which king was married to Eleanor of Aquitaine?",
+            "choices": ["Henry I", "Henry V", "Henry II", "Richard I"],
+            "answer": "Henry II"
+        }
+    ]
+}

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import pygame
-from pygame.locals import K_BACKSPACE
 
 
 class InputBox(pygame.sprite.Sprite):
