@@ -166,7 +166,6 @@ class Game(object):
         if len(self.questions_answers) > 0:
             self.qac = self.questions_answers.pop(0)
 
-            print self.qac
             self.question.add(QuestionDisplay(
                 self.question_font,
                 self.question_colors,
