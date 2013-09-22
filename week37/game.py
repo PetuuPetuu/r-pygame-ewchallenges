@@ -17,7 +17,17 @@ class Game(object):
 
         pygame.key.set_repeat(200, 80)
 
-        self.width, self.height = 600, 600
+        info = pygame.display.Info()            # get display info
+        screen_height = info.current_h
+        screen_width = info.current_w
+        self.width, self.height = 800, 800
+        if screen_height < 800:
+            self.height = 600
+            self.width = 600
+            if screen_height < 600:
+                self.height = screen_height-39
+                self.width = screen_width-16
+
         self.screen = pygame.display.set_mode(
             (self.width, self.height),
             (pygame.RESIZABLE)
