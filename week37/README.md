@@ -1,14 +1,25 @@
-r-pygame-ewchallenges
-=====================
+**[Challenge assigment: Quiz](http://www.reddit.com/r/pygame/comments/1mi7yg/weekly_challenge_quiz/)**
 
-Pygame weekly challenges from www.reddit.com/r/pygame
 
-Screenshots:
+A "Who Wants to be a Millionaire"-like quiz written in Python using PyGame.
 
-Week 35:
 
-![Week 35](https://github.com/bradur/r-pygame-ewchallenges/raw/master/screenshots/w35.png  "w35")
+Multiple choices
 
-Week 37:
+
+A correct answer
+
+Bonus assignments
+
+
+Implement music and sounds. Remember the atmosphere in Who Wants to be a Millionaire?
+See if you are able to create something alike! Perhaps even a crowd-cheer when the answer is correct?
+
+
+Local leaderboards. Allow users to write their names at the end of the game session so that
+they can keep track of their scores. These could be stored in a simple text file,
+which is being parsed and sorted when showing the highscore.
+
+**Result**:
 
 ![Week 37](https://github.com/bradur/r-pygame-ewchallenges/raw/master/screenshots/w37.png  "w37")
