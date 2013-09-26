@@ -43,6 +43,12 @@
         },
 
         {
+            "question": "Sherpas and Gurkhas are native to which country?",
+            "choices": ["Ecuador", "Morocco", "Nepal", "Russia"],
+            "answer": "Nepal"
+        },
+
+        {
             "question": "Prime Minister Tony Blair was born in which country?",
             "choices": ["Northern Ireland", "Scotland", "England", "Wales"],
             "answer": "Scotland"
