@@ -279,3 +279,11 @@ class Button(GUIElement):
         self.colorchange = "background_hover"
         self.hovered = True
         self.update()
+
+    def right(self):
+        self.colorchange = "background_right"
+        self.update()
+
+    def wrong(self):
+        self.colorchange = "background_wrong"
+        self.update()

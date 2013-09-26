@@ -2,7 +2,7 @@
 import pygame
 import json
 import os
-from pygame.locals import QUIT, MOUSEBUTTONDOWN, KEYDOWN, K_ESCAPE
+from pygame.locals import QUIT, MOUSEBUTTONDOWN, KEYDOWN, K_ESCAPE, USEREVENT
 from GUIElements import ScoreDisplay, QuestionDisplay, Popup, Button
 
 
@@ -60,6 +60,8 @@ class Game(object):
             "font_size": self.width/30,
             "color_text": [30, 30, 31],
             "background_default": [203, 209, 207],  # 2EA736
+            "background_right": [38, 153, 38],
+            "background_wrong": [191, 48, 48],
             "background_hover": [253, 227, 44],     # 08DE16
             "color_border": [240, 240, 240]          # 03900C
         }
@@ -136,6 +138,7 @@ class Game(object):
         self.title = pygame.sprite.GroupSingle()
 
         self.mouse = pygame.sprite.GroupSingle()
+        self.asking = True
         self.mouse.add(Mouse())
 
         self.start_game()
@@ -243,37 +246,43 @@ class Game(object):
         self.mouse.sprite.move(pygame.mouse.get_pos())
         for event in pygame.event.get():
 
-            for choice in self.choices:
-                if pygame.sprite.spritecollide(choice, self.mouse, False):
-                    if not self.show_overlay:
-                        choice.hover()
+            if not self.asking:
+                if event.type == USEREVENT+1:
+                    self.asking = True
+                    self.next_question()
+
+            else:
+                for choice in self.choices:
+                    if pygame.sprite.spritecollide(choice, self.mouse, False):
+                        if not self.show_overlay:
+                            choice.hover()
+                        else:
+                            choice.unhover()
                     else:
                         choice.unhover()
-                else:
-                    choice.unhover()
 
-            for button in self.buttons:
-                if pygame.sprite.spritecollide(button, self.mouse, False):
-                    button.hover()
-                else:
-                    button.unhover()
-
-            if event.type == QUIT:
-                return False
-
-            if event.type == MOUSEBUTTONDOWN:
-                for choice in self.choices:
-                    if choice.hovered:
-                        self.check_answer(choice.text)
                 for button in self.buttons:
-                    if button.hovered:
-                        if self.perform_action(button.action) is False:
-                            return False
+                    if pygame.sprite.spritecollide(button, self.mouse, False):
+                        button.hover()
+                    else:
+                        button.unhover()
+
+                if event.type == MOUSEBUTTONDOWN:
+                    for choice in self.choices:
+                        if choice.hovered:
+                            self.check_answer(choice.text)
+                    for button in self.buttons:
+                        if button.hovered:
+                            if self.perform_action(button.action) is False:
+                                return False
 
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     return False
                 pass
+
+            if event.type == QUIT:
+                return False
 
     def perform_action(self, name):
         function = getattr(self, name)
@@ -290,22 +299,25 @@ class Game(object):
             self.topinfo.add(Popup(
                 self.button_style_play,
                 [self.width, self.height],
-                u"\u00A3"+str(difference),
+                "+ "u"\u00A3"+str(difference),
                 "bottom",
                 float=True
             ))
-
             self.scoredisplay.update()
             self.successound.play()
         else:
-            self.topinfo.add(Popup(
-                self.button_style_quit,
-                [self.width, self.height],
-                self.qac["answer"],
-                "bottom"
-            ))
             self.failsound.play()
-        self.next_question()
+
+        for choice in self.choices:
+            if choice.text == self.qac["answer"]:
+                choice.right()
+            elif choice.text == text and choice.text != self.qac["answer"]:
+                choice.wrong()
+            else:
+                self.choices.remove(choice)
+
+        self.asking = False
+        pygame.time.set_timer(USEREVENT+1, 1000)
 
     def draw(self):
 
